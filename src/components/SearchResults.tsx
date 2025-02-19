@@ -2,13 +2,12 @@
 
 import { Product } from "../hooks/useProductSearch";
 
-interface SearchResultsProps {
-  results: Product[];
-}
 
-export default function SearchResults({ results }: SearchResultsProps) {
+export default function SearchResults({ results, error = "" }:{ results: Product[]; error?: string }) {
   return (
     <ul className="results-list">
+      {error && <p className="error-text">{error}</p>}
+      {results.length === 0 && !error && <p className="loading-text">No products found.</p>}
       {results.map((product) => (
         <div key={product.productId} className="product-card">
           <h3 className="product-name">{product.name}</h3>

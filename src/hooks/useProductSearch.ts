@@ -38,7 +38,12 @@ export default function useProductSearch() {
           )}`,
           { signal: controller.signal }
         );
-        if (!res.ok) throw new Error("Failed to fetch suggestions");
+        if (!res.ok) {
+          if (res.status === 400) throw new Error("Invalid search term. Please enter at least 3 characters.");
+          if (res.status === 404) throw new Error("No products found.");
+          if (res.status === 500) throw new Error("Server error. Please try again later.");
+          throw new Error(`Unexpected error: ${res.status}`);
+        }
 
         const data: Product[] = await res.json();
         setSuggestions(data);
@@ -68,7 +73,12 @@ export default function useProductSearch() {
           query.trim()
         )}`
       );
-      if (!res.ok) throw new Error("Failed to fetch products");
+      if (!res.ok) {
+        if (res.status === 400) throw new Error("Invalid search term. Please enter at least 3 characters.");
+        if (res.status === 404) throw new Error("No products found.");
+        if (res.status === 500) throw new Error("Server error. Please try again later.");
+        throw new Error(`Unexpected error: ${res.status}`);
+      }
 
       const data: Product[] = await res.json();
       setResults(data);
